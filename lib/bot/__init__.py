@@ -90,6 +90,7 @@ class Bot(BotBase):
             print("bot reconnected")
 
     async def on_message(self, message):
-        pass
+            print("procesando comando")
+            await self.process_commands(message)
 
 bot=Bot()
