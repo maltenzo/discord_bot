@@ -1,9 +1,11 @@
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import CommandNotFound
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from glob import glob
 from ..db import db
 PREFIX = "-"
 OWNER_IDS = [221307082396139520]
+COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
 
 class Bot(BotBase):
     def __init__(self):
@@ -15,8 +17,16 @@ class Bot(BotBase):
         db.autosave(self.scheduler)
         super().__init__(command_prefix = PREFIX, owner_ids = OWNER_IDS)
 
+    def setup(self):
+        for cog in COGS:
+            self.load_extension(f"lib.cogs.{cog}")
+            print("cog loaded")
+        print("setup complete")
+
     def run(self, version):
         self.VERSION = version
+        print("running setup")
+        self.setup()
         with open("./lib/bot/token.0", "r" , encoding="utf-8") as tf:
             self.TOKEN = tf.read()
 
@@ -47,10 +57,9 @@ class Bot(BotBase):
             self.ready = True
             self.guild = self.get_guild(698347986148655187)
             self.scheduler.start()
+            self.stdout = self.get_channel(698347986148655190)
             print("Bot ready")
-
-            channel = self.get_channel(698347986148655190)
-            #await channel.send("Que onda perro!?!?!?!?!?!?!?")
+            #await self.stdout.send("Que onda perro!?!?!?!?!?!?!?")
         else:
             print("bot reconnected")
 
