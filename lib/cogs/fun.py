@@ -6,6 +6,8 @@ class Fun(Cog):
 
     @Cog.listener()
     async def on_ready(self):
+        if not self.bot.ready:
+            self.bot.cogs_ready.ready_up("fun") #paso fun por ser el nombre del archivo no de la clase
         print("fun cog ready")
 
 def setup(bot):
